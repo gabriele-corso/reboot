@@ -4,10 +4,10 @@ let
   cfg = config.reboot.kernel;
 
   kernelFor = series:
-    {
-      "6_18" = pkgs.linuxKernel.kernels.linux_6_18;
-      "7_3" = pkgs.linuxKernel.kernels.linux_7_3;
-    }."${series}";
+    if series == "latest" then
+      pkgs.linuxPackages_latest.kernel
+    else
+      pkgs.linuxKernel.kernels.linux_6_18;
 
   kernel = (kernelFor cfg.series).override {
     structuredExtraConfig = {
@@ -24,14 +24,15 @@ in
 {
   options.reboot.kernel = {
     series = lib.mkOption {
-      type = lib.types.enum [ "6_18" "7_3" ];
-      default = "6_18";
+      type = lib.types.enum [ "latest" "6_18" ];
+      default = "latest";
       description = ''
-        Kernel source series built by nixpkgs.
+        `latest` segue il kernel più nuovo presente nel nixpkgs pinnato.
+        La CI aggiorna il lockfile ogni 6 ore, quindi il kernel si aggiorna
+        senza toccare questo file.
 
-        `6_18` is the maintained LTS line used by default for wider hardware
-        compatibility. `7_3` is the newest maintained line shipped by the
-        pinned nixpkgs revision.
+        `6_18` è l'unica via di fuga, da usare solo se il kernel nuovo
+        dovesse dare problemi su qualche macchina.
       '';
     };
   };

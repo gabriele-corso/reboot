@@ -9,8 +9,11 @@ writer di `flake.lock`; i nodi non scrivono mai il lockfile locale.
 ## Stato
 
 - Base: `nixpkgs/nixos-unstable`
-- Kernel predefinito: Linux 6.18 LTS, sorgente e config gestiti da nixpkgs
-- Kernel alternativo: Linux 7.3
+- Kernel predefinito: `linuxPackages_latest`, attualmente Linux 7.3.5, compilato dal sorgente
+- Via di fuga kernel: `reboot.kernel.series = "6_18"`
+- Aggiornamento lockfile: ogni 6 ore via GitHub Actions
+- Desktop installato: Cinnamon + LightDM
+- Agenti e tool dev già dentro: vedi [docs/AGENTS.md](docs/AGENTS.md)
 - Architettura ISO supportata: `x86_64-linux`
 - Canale di update: `github:gabriele-corso/reboot/stable`
 
@@ -56,6 +59,7 @@ La policy predefinita è `manual`: l'aggiornamento viene applicato con
 
 - [Architettura](docs/ARCHITECTURE.md)
 - [Aggiornamenti](docs/UPDATE.md)
+- [Agenti e tool](docs/AGENTS.md)
 - [Compatibilità hardware](docs/HARDWARE.md)
 
 ## Licenza

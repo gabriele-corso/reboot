@@ -3,10 +3,12 @@
 ## Componenti
 
 - `flake.nix`: punto d'ingresso, pin di nixpkgs, configurazioni NixOS, dev shell.
-- `modules/kernel.nix`: sceglie la serie kernel e applica le opzioni di config extra.
+- `modules/kernel.nix`: usa `linuxPackages_latest` e applica le opzioni di config extra.
 - `modules/auto-update.nix`: timer, servizio e dispatcher per leggere `stable`.
+- `modules/agents.nix`: agent CLI e tool dev preinstallati, senza configurazione.
 - `hosts/reboot-iso.nix`: configurazione dell'ISO ibrida BIOS/UEFI/USB.
-- `.github/workflows/stable.yml`: aggiorna `flake.lock` e pubblica `stable`.
+- `hosts/reboot-desktop.nix`: profilo installato con Cinnamon, LightDM e GRUB.
+- `.github/workflows/stable.yml`: aggiorna `flake.lock` ogni 6 ore e pubblica `stable`.
 
 ## Perché il lock ha un solo writer
 
@@ -23,8 +25,12 @@ Il risultato è un parco macchine convergente e verificabile.
 ## Kernel
 
 Il kernel non è un binario preso da una distro: nixpkgs costruisce il pacchetto
-dal sorgente. `boot.kernelPackages` usa `pkgs.linuxPackagesFor kernel`, quindi
-moduli e initrd vengono costruiti contro lo stesso derivato.
+dal sorgente. Il default è `pkgs.linuxPackages_latest.kernel`, quindi il kernel
+segue il rilascio più nuovo presente nel nixpkgs pinnato. Siccome la CI aggiorna
+`flake.lock` ogni 6 ore, il kernel si aggiorna senza modificare i file del repo.
+
+`boot.kernelPackages` usa `pkgs.linuxPackagesFor kernel`, quindi moduli e initrd
+vengono costruiti contro lo stesso derivato.
 
 Opzioni di config esplicite:
 

@@ -3,6 +3,8 @@
 ## Modello
 
 `stable` è l'unico canale consumato dai nodi. GitHub Actions è l'unico writer.
+Il workflow aggiorna `flake.lock` a ogni push su `main` e ogni 6 ore, così
+nixpkgs e il kernel latest seguono il upstream senza interventi manuali.
 
 Il nodo confronta lo SHA locale salvato in
 `/var/lib/reboot-auto-update/seen-rev` con ilrefs/heads/stable remoto.

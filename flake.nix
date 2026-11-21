@@ -11,6 +11,7 @@
       mkPkgs = system: import nixpkgs {
         inherit system;
         config.allowUnfree = true;
+        config.problems.handlers.zfs.broken = "warn";
       };
 
       forEachSystem = f:
@@ -30,6 +31,7 @@
           ./hosts/reboot-iso.nix
           {
             nixpkgs.config.allowUnfree = true;
+            nixpkgs.config.problems.handlers.zfs.broken = "warn";
             networking.hostName = "reboot";
             boot.zfs.forceImportRoot = false;
             system.stateVersion = "26.05";
@@ -42,6 +44,8 @@
         modules = [
           ./modules/auto-update.nix
           {
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.config.problems.handlers.zfs.broken = "warn";
             networking.hostName = "reboot-node";
             boot.zfs.forceImportRoot = false;
             boot.loader.grub.devices = [ "/dev/sda" ];
@@ -53,6 +57,23 @@
               enable = true;
               host = "reboot-node";
             };
+            system.stateVersion = "26.05";
+          }
+        ];
+      };
+
+      nixosConfigurations.reboot-desktop = lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./modules/kernel.nix
+          ./modules/auto-update.nix
+          ./modules/agents.nix
+          ./hosts/reboot-desktop.nix
+          {
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.config.problems.handlers.zfs.broken = "warn";
+            networking.hostName = "reboot-desktop";
+            boot.zfs.forceImportRoot = false;
             system.stateVersion = "26.05";
           }
         ];
